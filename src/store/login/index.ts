@@ -71,7 +71,8 @@ const useLoginStore = defineStore('login', {
         const loginResult = await accountLoginRequest(accountInfo)
         const { data } = loginResult
         const { id, token } = data
-        if (loginResult.status === 200) {
+        console.log('loginResult', loginResult)
+        if (loginResult.code === 200) {
           ElMessage.success('登录成功')
         } else {
           ElMessage.error(loginResult.message)

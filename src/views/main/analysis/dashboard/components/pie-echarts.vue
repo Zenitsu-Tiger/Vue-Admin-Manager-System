@@ -51,21 +51,13 @@ function setOption(pieDatas: pieData) {
       name: item.station_name
     }
   })
-  /*
-    在你的代码中，total 是一个计算属性，
-    而 TypeScript 在静态类型检查时，
-    可能无法正确地捕获该计算属性的类型。
-    为了解决这个问题，你可以将 total 放在 option 对象外面，
-    并且使用一个中间变量来存储它。这样 TypeScript 就能够正确地捕获它的类型了。
-  */
   let total = pieDatas.reduce((a, b) => {
     return a + b.value * 1
   }, 0)
 
-  let option = {
-    color: pieDatas.map((item) => {
-      return item.color
-    }),
+  // Base options suitable for larger screens
+  const baseOption = {
+    color: pieDatas.map((item) => item.color),
     title: {
       text: `{nameSty| 充电桩总数}\n{number|${total}}`,
       top: '50%',
@@ -91,7 +83,7 @@ function setOption(pieDatas: pieData) {
       top: '16%',
       itemGap: 16,
       itemWidth: 10,
-      itemHeigth: 10,
+      itemHeight: 10,
       icon: 'rect',
       formatter: function (name: string) {
         let currentItem = pieDatas.find((item) => item.station_name === name)
@@ -139,7 +131,53 @@ function setOption(pieDatas: pieData) {
       }
     ]
   }
-  return option
+
+  // Responsive options
+  const mediaOption = [
+    {
+      // Apply these options when container width is <= 768px
+      query: { maxWidth: 768 },
+      option: {
+        title: {
+          top: '10%',
+          left: 'center',
+          textStyle: {
+            rich: {
+              nameSty: { fontSize: 11 },
+              number: { fontSize: 13, padding: [4, 0, 0, 0] }
+            }
+          }
+        },
+        legend: {
+          orient: 'horizontal',
+          bottom: '5%',
+          left: 'center',
+          top: 'auto',
+          right: 'auto',
+          itemGap: 10,
+          textStyle: {
+            rich: {
+              nameSty: { fontSize: 11, padding: [0, 5, 0, 0] },
+              numberSty: { fontSize: 11, padding: [0, 5, 0, 0] },
+              preSty: { fontSize: 11 }
+            }
+          }
+        },
+        series: [
+          {
+            center: ['50%', '55%'],
+            radius: ['25%', '60%']
+          }
+        ]
+      }
+    }
+  ]
+
+  // Combine base and media options
+  return {
+    baseOption: baseOption,
+    media: mediaOption
+  }
 }
 </script>
 <style lang="less" scoped></style>

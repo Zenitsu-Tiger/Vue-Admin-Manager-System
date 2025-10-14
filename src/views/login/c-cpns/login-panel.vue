@@ -64,7 +64,6 @@ async function handleLoginBtnClick() {
   btnLoading.value = true
   try {
     const result = await accountRef.value?.loginAction(isRemPwd.value)
-    console.log('result', result)
     if (result && isNavigationFailure(result)) {
       ElMessage.error('跳转失败，请重试')
     }

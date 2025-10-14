@@ -1,7 +1,11 @@
 <template>
   <div class="login" ref="Area">
     <div class="box-left first-box">
-      <svg id="location" height="400">
+      <svg
+        id="location"
+        viewBox="0 0 500 400"
+        preserveAspectRatio="xMidYMid meet"
+      >
         <desc>Created with Snap</desc>
         <defs>
           <linearGradient
@@ -21,7 +25,7 @@
           :href="getAssetsFile('login/redPoint.png')"
           preserveAspectRatio="none"
           x="280"
-          y="100.275"
+          y="100"
           width="55"
           height="74"
         ></image>
@@ -30,7 +34,7 @@
           :href="getAssetsFile('login/smPoint.png')"
           preserveAspectRatio="none"
           x="185"
-          y="129.97776888888889"
+          y="130"
           width="25"
           height="34"
         ></image>
@@ -39,7 +43,7 @@
           :href="getAssetsFile('login/smPoint.png')"
           preserveAspectRatio="none"
           x="385"
-          y="120.35983743115371"
+          y="120"
           width="25"
           height="34"
         ></image>
@@ -71,8 +75,8 @@
           id="c1"
           cx="310"
           cy="257"
-          rx="8.106666666666667"
-          ry="3.546666666666667"
+          rx="8"
+          ry="4"
           fill="rgba(0,0,0,0)"
           stroke="#ff0000"
           style="opacity: 0.493333"
@@ -101,8 +105,8 @@
           id="c4"
           cx="198"
           cy="190"
-          rx="6.08"
-          ry="2.5333333333333337"
+          rx="6"
+          ry="3"
           fill="rgba(0,0,0,0)"
           stroke="#ff0000"
           style="opacity: 0.493333"
@@ -136,6 +140,12 @@ import { getAssetsFile } from '@/utils/pub-use'
   height: 2.1563rem;
   background: url('../../assets/images/login/bg-location.png');
   background-size: 100% 100%;
+
+  #location {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 }
 /* 椭圆 16-8 12-6 */
 /* 定位 40-60,70-80 */
