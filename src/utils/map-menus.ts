@@ -1,4 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
+import { DEMO_MODE, DEMO_MENUS, DEMO_SUB_MENUS } from '@/global/demo-mode'
+
 // 加载本地路由的函数
 function loadLocalRoutes() {
   // 根据路由映射表动态的添加路由对象(路由对象放在独立的文件之中)
@@ -24,6 +26,47 @@ function loadLocalRoutes() {
   }
   return localRoutes
 }
+
+/**
+ * 合并演示菜单到用户菜单
+ * 1. 对于不存在的一级菜单，直接添加
+ * 2. 对于已存在的一级菜单，合并子菜单（添加缺失的子路由）
+ */
+function mergeDemoMenus(userMenus: any[]): any[] {
+  if (!DEMO_MODE) return userMenus
+
+  // 深拷贝用户菜单，避免修改原数据
+  const mergedMenus = JSON.parse(JSON.stringify(userMenus))
+
+  // 遍历演示菜单
+  for (const demoMenu of DEMO_MENUS) {
+    // 查找是否已存在相同URL的一级菜单
+    const existingMenu = mergedMenus.find((m: any) => m.url === demoMenu.url)
+
+    if (!existingMenu) {
+      // 不存在，直接添加整个一级菜单
+      mergedMenus.push(demoMenu)
+    } else {
+      // 已存在，合并子菜单
+      const demoSubMenus = DEMO_SUB_MENUS[demoMenu.url] || demoMenu.children
+      if (demoSubMenus && existingMenu.children) {
+        for (const demoSub of demoSubMenus) {
+          // 检查子菜单是否已存在
+          const existingSub = existingMenu.children.find(
+            (s: any) => s.url === demoSub.url
+          )
+          if (!existingSub) {
+            // 不存在的子菜单，添加进去
+            existingMenu.children.push(demoSub)
+          }
+        }
+      }
+    }
+  }
+
+  return mergedMenus
+}
+
 // 这是首次加载路由，单独定义并导出该全局变量(首次加载的路由)
 export let firstMenu: any = null
 
@@ -31,10 +74,14 @@ export let firstMenu: any = null
 export function mapMenusToRoutes(userMenus: any[]) {
   // 1.先加载本地的路由
   const localRoutes = loadLocalRoutes()
+
+  // 演示模式下，合并演示菜单
+  const mergedMenus = mergeDemoMenus(userMenus)
+
   // 2.根据路由映射表去匹配正确的路由
   // 先把前端本地路由映射表的路由全部汇总进来，然后再从后端获取的路由映射表进行匹配
   const routes: RouteRecordRaw[] = []
-  for (const menu of userMenus) {
+  for (const menu of mergedMenus) {
     for (const submenu of menu.children) {
       const route = localRoutes.find((route) => route.path === submenu.url)
       /* 实现功能：为顶层的菜单(可以理解为一级面包屑)添加重定向功能，定位到
@@ -63,7 +110,10 @@ export function mapMenusToRoutes(userMenus: any[]) {
  * @param userMenus 后端返回的所有的菜单
  */
 export function mapPathToMenu(path: string, userMenus: any[]) {
-  for (const menu of userMenus) {
+  // 演示模式下，合并演示菜单
+  const mergedMenus = mergeDemoMenus(userMenus)
+
+  for (const menu of mergedMenus) {
     for (const submenu of menu.children) {
       // 寻找等于传入path的路由映射
       if (submenu.url === path) {
@@ -72,15 +122,20 @@ export function mapPathToMenu(path: string, userMenus: any[]) {
     }
   }
 }
+
 interface IBreadcrumbs {
   name: string
   path?: string
 }
+
 // 需要两个传参：当前的路由地址，和后端返回的所有的路由映射菜单
 export function mapPathToBreadcrumbs(path: string, userMenus: any[]) {
+  // 演示模式下，合并演示菜单
+  const mergedMenus = mergeDemoMenus(userMenus)
+
   const breadcrumbs: IBreadcrumbs[] = []
   // 遍历面包屑获取对应层级
-  for (const menu of userMenus) {
+  for (const menu of mergedMenus) {
     for (const submenu of menu.children) {
       // 寻找传入path的路由映射,将其层级的信息添加到面包屑中
       if (submenu.url === path) {
@@ -112,6 +167,7 @@ export function mapMenuListToIds(menuList: any[]) {
   recurseGetId(menuList)
   return ids
 }
+
 /**
  * 从菜单映射到按钮的权限
  *  @returns 权限的数组(字符串数组)

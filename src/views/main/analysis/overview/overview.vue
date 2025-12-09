@@ -151,7 +151,7 @@
   p {
     color: #fff;
     padding: 8px 20px;
-    font-size: clamp(0.1rem, 0.5vw + 0.5rem, 0.875rem);
+    font-size: 16px;
     line-height: 1.4;
   }
 }

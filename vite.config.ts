@@ -13,6 +13,15 @@ import {
 } from 'vite-plugin-style-import'
 export default defineConfig({
   base: '/',
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
   plugins: [
     createStyleImportPlugin({
       resolves: [ElementPlusResolve()],

@@ -16,19 +16,21 @@
         background-color="#001529"
       >
         <!-- 通过遍历后端传输数据的方式遍历整个路由映射表 -->
-        <template v-for="item in userMenus" :key="item.id">
+        <template v-for="item in mergedMenus" :key="item.id">
           <!-- 通过index标识来使得展开收缩只使对应模块起效果 -->
           <el-sub-menu :index="item.id + ''">
             <template #title>
               <el-icon>
                 <!-- 动态组件component 可通过is选取生成对应的组件 -->
                 <!-- < Monitor /> 通过动态组件来进行转化 -->
-                <component :is="item.icon.split('-icon-')[1]"></component>
+                <component :is="getIconName(item.icon)"></component>
               </el-icon>
               <span>{{ item.name }}</span>
             </template>
             <template v-for="subitem in item.children" :key="subitem.id">
+              <!-- 只显示 type 为 2 的子菜单（过滤掉 type 为 3 的按钮权限） -->
               <el-menu-item
+                v-if="subitem.type === 2"
                 :index="subitem.id + ''"
                 @click="handleItemClick(subitem)"
               >
@@ -47,6 +49,7 @@ import useLoginStore from '@/store/login'
 import { useRouter, useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { mapPathToMenu } from '@/utils/map-menus'
+import { DEMO_MODE, DEMO_MENUS, DEMO_SUB_MENUS } from '@/global/demo-mode'
 
 // 0 接收props
 defineProps({
@@ -55,10 +58,59 @@ defineProps({
     default: false
   }
 })
+
 // 1.获取动态的路由映射表
 const loginStore = useLoginStore()
 // userMenus是从后端获取的路由映射表
 const userMenus = loginStore.userMenus
+
+// 演示模式下合并菜单（与 map-menus.ts 中的逻辑保持一致）
+const mergedMenus = computed(() => {
+  if (!DEMO_MODE) return userMenus
+
+  // 深拷贝用户菜单，避免修改原数据
+  const result = JSON.parse(JSON.stringify(userMenus))
+
+  // 遍历演示菜单
+  for (const demoMenu of DEMO_MENUS) {
+    // 查找是否已存在相同URL的一级菜单
+    const existingMenu = result.find((m: any) => m.url === demoMenu.url)
+
+    if (!existingMenu) {
+      // 不存在，直接添加整个一级菜单
+      result.push(demoMenu)
+    } else {
+      // 已存在，合并子菜单
+      const demoSubMenus = DEMO_SUB_MENUS[demoMenu.url] || demoMenu.children
+      if (demoSubMenus && existingMenu.children) {
+        for (const demoSub of demoSubMenus) {
+          // 检查子菜单是否已存在
+          const existingSub = existingMenu.children.find(
+            (s: any) => s.url === demoSub.url
+          )
+          if (!existingSub) {
+            // 不存在的子菜单，添加进去
+            existingMenu.children.push(demoSub)
+          }
+        }
+      }
+    }
+  }
+
+  return result
+})
+
+// 获取图标名称的辅助函数
+function getIconName(icon: string) {
+  if (!icon) return 'Document'
+  // 处理 el-icon-xxx 格式
+  if (icon.includes('-icon-')) {
+    return icon.split('-icon-')[1]
+  }
+  // 直接返回图标名
+  return icon
+}
+
 // 获取当前router实例，实现点击跳转
 const router = useRouter()
 // 2.监听item的点击
