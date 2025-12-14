@@ -30,7 +30,6 @@
       @click="handleLoginBtnClick"
       >立即登录</el-button
     >
-    <p class="tips">用户名：haruhi 密码：123456</p>
   </div>
 </template>
 

@@ -23,7 +23,7 @@
 | 文件路径 | 说明 |
 |---------|------|
 | `src/views/main/product/category/category.vue` | 商品类别页（充电站分类管理） |
-| `src/views/main/product/goods/goods.vue` | 商品信息页（充电桩设备管理） |
+| `src/views/main/product/goods/goods.vue` | 商品信息页（充电桩设备管理）⭐ 使用 VTable 高性能表格 |
 | `src/router/main/product/category/category.ts` | 商品类别路由配置 |
 | `src/router/main/product/goods/goods.ts` | 商品信息路由配置 |
 
@@ -31,6 +31,12 @@
 | 文件路径 | 说明 |
 |---------|------|
 | `src/global/demo-mode.ts` | 演示模式开关和配置，用于绕过后端权限控制 |
+
+### 新增依赖 (VTable)
+| 依赖包 | 说明 |
+|---------|------|
+| `@visactor/vtable` | VTable 核心包 - 高性能 Canvas 表格 |
+| `@visactor/vue-vtable` | VTable Vue3 适配器 |
 
 ---
 
@@ -428,7 +434,7 @@ export const DEMO_MODE = false  // 关闭演示模式
 **展示内容：**
 - 📊 设备状态统计面板（总数、空闲、充电中、故障）
 - 🔍 多维度筛选（编码、站点、类型、状态）
-- 📋 设备列表表格（今日/累计数据对比）
+- 📋 **VTable 高性能表格**（替代 el-table）
 - 📱 设备详情抽屉
   - 状态卡片
   - 基本信息
@@ -440,6 +446,10 @@ export const DEMO_MODE = false  // 关闭演示模式
 - 直流快充、交流慢充、超级快充、液冷超充
 
 **技术亮点：**
+- ⭐ **VTable 高性能表格** - Canvas 渲染，支持百万级数据
+- 自定义列渲染（customLayout）
+- 主题配置与行高亮
+- 单元格点击事件
 - 状态实时指示灯效果
 - 抽屉式详情面板
 - 数据格式化显示

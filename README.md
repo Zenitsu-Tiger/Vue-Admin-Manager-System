@@ -1785,9 +1785,320 @@ const showGoodsCategoryCount = computed(() => {
 - 直流快充、交流慢充、超级快充、液冷超充
 
 **技术亮点：**
+- ⭐ **VTable 高性能表格** - 替换 el-table，支持百万级数据渲染
 - 状态实时指示灯效果
 - 抽屉式详情面板
 - 数据格式化显示
+
+---
+
+## VTable 高性能表格使用教程
+
+> 本教程以商品信息页（`/main/product/goods`）为例，介绍如何在 Vue3 项目中使用 VTable 替代 Element Plus 的 el-table。
+
+### 什么是 VTable？
+
+[VTable](https://visactor.io/vtable) 是 VisActor 出品的高性能表格组件，专为大数据场景设计：
+- 🚀 **高性能**：基于 Canvas 渲染，轻松支持百万级数据
+- 🎨 **高度可定制**：支持自定义渲染、主题、样式
+- 📱 **丰富交互**：支持排序、筛选、冻结列、虚拟滚动等
+
+### Step 1: 安装依赖
+
+```bash
+# 安装 VTable 核心包
+pnpm add @visactor/vtable @visactor/vue-vtable
+```
+
+### Step 2: 基础使用 - 创建表格实例
+
+```typescript
+// 导入 VTable
+import { ListTable } from '@visactor/vtable'
+import type { ListTableConstructorOptions, TYPES } from '@visactor/vtable'
+
+// 获取容器 DOM 引用
+const vtableContainer = ref<HTMLElement | null>(null)
+let tableInstance: ListTable | null = null
+
+// 在 onMounted 中初始化
+onMounted(() => {
+  if (!vtableContainer.value) return
+
+  // 配置项
+  const option: ListTableConstructorOptions = {
+    records: yourData,        // 数据源
+    columns: yourColumns,     // 列定义
+    widthMode: 'autoWidth',   // 宽度模式
+    heightMode: 'autoHeight', // 高度模式
+    defaultRowHeight: 48,     // 默认行高
+  }
+
+  // 创建实例
+  tableInstance = new ListTable(vtableContainer.value, option)
+})
+
+// 在 onUnmounted 中销毁
+onUnmounted(() => {
+  if (tableInstance) {
+    tableInstance.release()  // 释放资源
+    tableInstance = null
+  }
+})
+```
+
+### Step 3: 列配置详解
+
+```typescript
+const columns: TYPES.ColumnsDefine = [
+  // 基础列 - 只需 field 和 title
+  {
+    field: 'name',
+    title: '设备名称',
+    width: 150
+  },
+
+  // 【方式1】静态样式配置
+  {
+    field: 'code',
+    title: '设备编码',
+    width: 140,
+    style: {
+      color: '#409eff',
+      fontWeight: 'bold',
+      textAlign: 'left',
+      padding: [0, 12]  // 上下、左右内边距
+    }
+  },
+
+  // 【方式2】格式化显示 - 使用 fieldFormat
+  {
+    field: 'power',
+    title: '功率',
+    width: 80,
+    style: {
+      textAlign: 'center',
+      color: '#e6a23c',
+      fontWeight: 'bold'
+    },
+    fieldFormat: (record) => `${record.power}kW`
+  },
+
+  // 【方式3】动态样式函数 - 根据数据返回不同样式（推荐）
+  {
+    field: 'status',
+    title: '设备状态',
+    width: 100,
+    // style 可以是函数，根据每行数据动态返回样式
+    style: (args) => {
+      const { row, table, col } = args
+      // 表头行返回默认样式
+      if (row === 0) {
+        return { textAlign: 'center' }
+      }
+      // 获取该行原始数据
+      const record = table.getCellOriginRecord(col, row) as any
+      // 状态颜色映射
+      const statusColors: Record<string, string> = {
+        available: '#67c23a',  // 绿色 - 空闲
+        charging: '#409eff',   // 蓝色 - 充电中
+        fault: '#f56c6c',      // 红色 - 故障
+        occupied: '#e6a23c'    // 橙色 - 占用
+      }
+      return {
+        textAlign: 'center',
+        color: statusColors[record?.status] || '#606266',
+        fontWeight: 'bold'
+      }
+    },
+    // 配合 fieldFormat 转换显示文字
+    fieldFormat: (record) => {
+      const statusTexts: Record<string, string> = {
+        available: '● 空闲',
+        charging: '● 充电中',
+        fault: '● 故障',
+        occupied: '● 占用'
+      }
+      return statusTexts[record.status] || record.status
+    }
+  },
+
+  // 【方式4】背景色动态变化
+  {
+    field: 'typeName',
+    title: '设备类型',
+    width: 110,
+    style: (args) => {
+      const { row, table, col } = args
+      if (row === 0) return { textAlign: 'center' }
+      const record = table.getCellOriginRecord(col, row) as any
+      return {
+        textAlign: 'center',
+        color: '#fff',
+        // 根据类型设置不同背景色
+        bgColor: record?.type === 'DC' ? '#e6a23c' : '#67c23a'
+      }
+    }
+  }
+]
+```
+
+### Step 4: 主题配置
+
+```typescript
+const option: ListTableConstructorOptions = {
+  // ... 其他配置
+  theme: {
+    // 表头样式
+    headerStyle: {
+      bgColor: '#f5f7fa',
+      color: '#606266',
+      fontWeight: 'bold',
+      fontSize: 14,
+      borderColor: '#ebeef5',
+      borderLineWidth: 1
+    },
+    // 表体样式
+    bodyStyle: {
+      bgColor: '#fff',
+      color: '#606266',
+      fontSize: 13,
+      borderColor: '#ebeef5',
+      borderLineWidth: 1,
+      hover: {
+        cellBgColor: '#ecf5ff'  // 鼠标悬浮背景色
+      }
+    }
+  },
+  // 行高亮模式
+  hover: {
+    highlightMode: 'row'
+  }
+}
+```
+
+### Step 5: 事件绑定
+
+```typescript
+// 绑定单元格点击事件
+tableInstance.on('click_cell', (args) => {
+  const { col, row, field } = args
+
+  // 判断点击的是哪一列
+  if (field === 'code' && row > 0) {
+    // 获取该行原始数据
+    const record = tableInstance?.getCellOriginRecord(col, row)
+    console.log('点击了设备:', record)
+  }
+})
+
+// 其他常用事件
+tableInstance.on('dblclick_cell', (args) => { /* 双击单元格 */ })
+tableInstance.on('selected_cell', (args) => { /* 选中单元格 */ })
+tableInstance.on('scroll', (args) => { /* 滚动事件 */ })
+```
+
+### Step 6: 更新数据
+
+```typescript
+// 使用 setRecords 方法高效更新数据
+const updateData = () => {
+  if (tableInstance) {
+    tableInstance.setRecords(newData)
+  }
+}
+
+// 监听数据变化，自动更新表格
+watch(
+  () => yourReactiveData.value,
+  () => updateData(),
+  { deep: true }
+)
+```
+
+### 完整示例代码结构
+
+```vue
+<template>
+  <div ref="vtableContainer" class="vtable-container"></div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ListTable } from '@visactor/vtable'
+import type { ListTableConstructorOptions } from '@visactor/vtable'
+
+const vtableContainer = ref<HTMLElement | null>(null)
+let tableInstance: ListTable | null = null
+
+// 你的数据
+const tableData = ref([...])
+
+// 列配置
+const columns = [...]
+
+// 初始化
+onMounted(() => {
+  if (!vtableContainer.value) return
+
+  tableInstance = new ListTable(vtableContainer.value, {
+    records: tableData.value,
+    columns,
+    // ... 其他配置
+  })
+
+  // 绑定事件
+  tableInstance.on('click_cell', handleCellClick)
+})
+
+// 销毁
+onUnmounted(() => {
+  tableInstance?.release()
+  tableInstance = null
+})
+
+// 监听数据变化
+watch(() => tableData.value, () => {
+  tableInstance?.setRecords(tableData.value)
+}, { deep: true })
+</script>
+
+<style scoped>
+.vtable-container {
+  width: 100%;
+  min-height: 400px;
+  border: 1px solid #ebeef5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+</style>
+```
+
+### VTable vs el-table 对比
+
+| 特性 | VTable | el-table |
+|------|--------|----------|
+| 渲染引擎 | Canvas | DOM |
+| 大数据性能 | ⭐⭐⭐⭐⭐ 百万级 | ⭐⭐ 千级 |
+| 自定义样式 | style 函数动态返回 | CSS + 插槽 |
+| 学习成本 | 低-中等 | 低 |
+| 生态集成 | 独立使用 | Element Plus 生态 |
+| 适用场景 | 大数据、复杂可视化 | 常规业务表格 |
+
+### 注意事项
+
+1. **容器必须有明确的宽高**：VTable 基于 Canvas，需要容器有明确尺寸
+2. **记得销毁实例**：在组件卸载时调用 `tableInstance.release()` 释放内存
+3. **数据更新用 setRecords**：不要重建实例，使用 `setRecords` 方法更新数据
+4. **style 函数中判断表头**：动态样式函数中需要判断 `row === 0` 来区分表头和数据行
+
+### 相关文档
+
+- [VTable 官方文档](https://visactor.io/vtable)
+- [VTable GitHub](https://github.com/VisActor/VTable)
+- [VTable 示例](https://visactor.io/vtable/example)
+
+---
 
 ## Mock 数据说明
 

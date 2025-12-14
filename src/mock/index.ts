@@ -723,249 +723,145 @@ export const mockChargingStations = [
   }
 ]
 
-// 充电桩设备数据
-export const mockChargingPiles = [
-  {
-    id: 1,
-    code: 'CP-2023-0001',
-    name: '直流快充桩-01',
-    stationId: 1,
-    stationName: '科技园A区充电站',
-    type: 'DC',
-    typeName: '直流快充',
-    power: 120,
-    voltage: 750,
-    current: 200,
-    connectorType: 'GB/T',
-    connectorCount: 2,
-    manufacturer: '特来电',
-    model: 'TLD-DC120',
-    serialNumber: 'SN20230001',
-    status: 'available',
-    networkStatus: 'online',
-    lastHeartbeat: '2023-12-03T10:30:00.000Z',
-    todayOrders: 23,
-    todayRevenue: 1890,
-    todayDuration: 456,
-    todayElectricity: 567.8,
-    totalOrders: 12345,
-    totalRevenue: 567890,
-    installDate: '2023-01-20',
-    lastMaintenance: '2023-11-15',
-    createAt: '2023-01-20T10:00:00.000Z',
-    updateAt: '2023-12-03T10:30:00.000Z'
-  },
-  {
-    id: 2,
-    code: 'CP-2023-0002',
-    name: '直流快充桩-02',
-    stationId: 1,
-    stationName: '科技园A区充电站',
-    type: 'DC',
-    typeName: '直流快充',
-    power: 120,
-    voltage: 750,
-    current: 200,
-    connectorType: 'GB/T',
-    connectorCount: 2,
-    manufacturer: '特来电',
-    model: 'TLD-DC120',
-    serialNumber: 'SN20230002',
-    status: 'charging',
-    networkStatus: 'online',
-    lastHeartbeat: '2023-12-03T10:30:00.000Z',
-    todayOrders: 18,
-    todayRevenue: 1456,
-    todayDuration: 380,
-    todayElectricity: 423.5,
-    totalOrders: 11234,
-    totalRevenue: 534560,
-    installDate: '2023-01-20',
-    lastMaintenance: '2023-11-15',
-    createAt: '2023-01-20T10:00:00.000Z',
-    updateAt: '2023-12-03T10:30:00.000Z'
-  },
-  {
-    id: 3,
-    code: 'CP-2023-0003',
-    name: '交流慢充桩-01',
-    stationId: 1,
-    stationName: '科技园A区充电站',
-    type: 'AC',
-    typeName: '交流慢充',
-    power: 7,
-    voltage: 220,
-    current: 32,
-    connectorType: 'Type2',
-    connectorCount: 1,
-    manufacturer: '星星充电',
-    model: 'XX-AC7',
-    serialNumber: 'SN20230003',
-    status: 'available',
-    networkStatus: 'online',
-    lastHeartbeat: '2023-12-03T10:30:00.000Z',
-    todayOrders: 8,
-    todayRevenue: 234,
-    todayDuration: 720,
-    todayElectricity: 45.6,
-    totalOrders: 5678,
-    totalRevenue: 123450,
-    installDate: '2023-02-15',
-    lastMaintenance: '2023-10-20',
-    createAt: '2023-02-15T10:00:00.000Z',
-    updateAt: '2023-12-03T10:30:00.000Z'
-  },
-  {
-    id: 4,
-    code: 'CP-2023-0004',
-    name: '超级快充桩-01',
-    stationId: 2,
-    stationName: '华强北商圈充电站',
-    type: 'DC',
-    typeName: '超级快充',
-    power: 360,
-    voltage: 1000,
-    current: 500,
-    connectorType: 'GB/T',
-    connectorCount: 2,
-    manufacturer: '华为',
-    model: 'HW-DC360',
-    serialNumber: 'SN20230004',
-    status: 'charging',
-    networkStatus: 'online',
-    lastHeartbeat: '2023-12-03T10:30:00.000Z',
-    todayOrders: 45,
-    todayRevenue: 6780,
-    todayDuration: 234,
-    todayElectricity: 1234.5,
-    totalOrders: 23456,
-    totalRevenue: 1234560,
-    installDate: '2023-03-01',
-    lastMaintenance: '2023-11-01',
-    createAt: '2023-03-01T10:00:00.000Z',
-    updateAt: '2023-12-03T10:30:00.000Z'
-  },
-  {
-    id: 5,
-    code: 'CP-2023-0005',
-    name: '直流快充桩-01',
-    stationId: 3,
-    stationName: '万科城花园充电站',
-    type: 'DC',
-    typeName: '直流快充',
-    power: 60,
-    voltage: 500,
-    current: 150,
-    connectorType: 'GB/T',
-    connectorCount: 1,
-    manufacturer: '云快充',
-    model: 'YKC-DC60',
-    serialNumber: 'SN20230005',
-    status: 'fault',
-    networkStatus: 'offline',
-    lastHeartbeat: '2023-12-02T18:30:00.000Z',
-    todayOrders: 0,
-    todayRevenue: 0,
-    todayDuration: 0,
-    todayElectricity: 0,
-    totalOrders: 8901,
-    totalRevenue: 345670,
-    installDate: '2023-04-10',
-    lastMaintenance: '2023-09-15',
-    createAt: '2023-04-10T10:00:00.000Z',
-    updateAt: '2023-12-02T18:30:00.000Z'
-  },
-  {
-    id: 6,
-    code: 'CP-2023-0006',
-    name: '交流慢充桩-02',
-    stationId: 3,
-    stationName: '万科城花园充电站',
-    type: 'AC',
-    typeName: '交流慢充',
-    power: 7,
-    voltage: 220,
-    current: 32,
-    connectorType: 'Type2',
-    connectorCount: 1,
-    manufacturer: '云快充',
-    model: 'YKC-AC7',
-    serialNumber: 'SN20230006',
-    status: 'occupied',
-    networkStatus: 'online',
-    lastHeartbeat: '2023-12-03T10:30:00.000Z',
-    todayOrders: 5,
-    todayRevenue: 156,
-    todayDuration: 540,
-    todayElectricity: 32.4,
-    totalOrders: 4567,
-    totalRevenue: 98760,
-    installDate: '2023-04-10',
-    lastMaintenance: '2023-10-01',
-    createAt: '2023-04-10T10:00:00.000Z',
-    updateAt: '2023-12-03T10:30:00.000Z'
-  },
-  {
-    id: 7,
-    code: 'CP-2023-0007',
-    name: '液冷超充桩-01',
-    stationId: 5,
-    stationName: '深汕高速服务区站',
-    type: 'DC',
-    typeName: '液冷超充',
-    power: 600,
-    voltage: 1000,
-    current: 600,
-    connectorType: 'GB/T',
-    connectorCount: 2,
-    manufacturer: '国家电网',
-    model: 'SGCC-DC600',
-    serialNumber: 'SN20230007',
-    status: 'available',
-    networkStatus: 'online',
-    lastHeartbeat: '2023-12-03T10:30:00.000Z',
-    todayOrders: 67,
-    todayRevenue: 12340,
-    todayDuration: 123,
-    todayElectricity: 2345.6,
-    totalOrders: 34567,
-    totalRevenue: 2345670,
-    installDate: '2023-06-01',
-    lastMaintenance: '2023-11-20',
-    createAt: '2023-06-01T10:00:00.000Z',
-    updateAt: '2023-12-03T10:30:00.000Z'
-  },
-  {
-    id: 8,
-    code: 'CP-2023-0008',
-    name: '一体式快充桩-01',
-    stationId: 6,
-    stationName: '宝安机场T3充电站',
-    type: 'DC',
-    typeName: '一体式快充',
-    power: 180,
-    voltage: 750,
-    current: 250,
-    connectorType: 'GB/T',
-    connectorCount: 4,
-    manufacturer: '南方电网',
-    model: 'CSG-DC180',
-    serialNumber: 'SN20230008',
-    status: 'charging',
-    networkStatus: 'online',
-    lastHeartbeat: '2023-12-03T10:30:00.000Z',
-    todayOrders: 34,
-    todayRevenue: 5678,
-    todayDuration: 289,
-    todayElectricity: 876.5,
-    totalOrders: 19876,
-    totalRevenue: 1567890,
-    installDate: '2023-07-15',
-    lastMaintenance: '2023-11-25',
-    createAt: '2023-07-15T10:00:00.000Z',
-    updateAt: '2023-12-03T10:30:00.000Z'
+// 充电桩设备数据 - 使用生成函数创建 300 条数据（演示虚拟滚动）
+export const mockChargingPiles = (() => {
+  // 基础配置数据
+  const stations = [
+    { id: 1, name: '科技园A区充电站' },
+    { id: 2, name: '华强北商圈充电站' },
+    { id: 3, name: '万科城花园充电站' },
+    { id: 4, name: '腾讯大厦专用站' },
+    { id: 5, name: '深汕高速服务区站' },
+    { id: 6, name: '宝安机场T3充电站' },
+    { id: 7, name: '福田CBD充电站' },
+    { id: 8, name: '南山软件园充电站' },
+    { id: 9, name: '龙岗大运中心站' },
+    { id: 10, name: '罗湖火车站充电站' }
+  ]
+
+  const pileTypes = [
+    {
+      type: 'DC',
+      typeName: '直流快充',
+      power: 120,
+      voltage: 750,
+      current: 200
+    },
+    { type: 'AC', typeName: '交流慢充', power: 7, voltage: 220, current: 32 },
+    {
+      type: 'DC',
+      typeName: '超级快充',
+      power: 360,
+      voltage: 1000,
+      current: 500
+    },
+    {
+      type: 'DC',
+      typeName: '液冷超充',
+      power: 600,
+      voltage: 1000,
+      current: 600
+    },
+    {
+      type: 'DC',
+      typeName: '一体式快充',
+      power: 180,
+      voltage: 750,
+      current: 250
+    },
+    { type: 'AC', typeName: '交流快充', power: 22, voltage: 380, current: 63 }
+  ]
+
+  const manufacturers = [
+    '特来电',
+    '星星充电',
+    '云快充',
+    '华为',
+    '国家电网',
+    '南方电网',
+    '小桔充电',
+    '蔚来能源'
+  ]
+  const statuses = ['available', 'charging', 'fault', 'occupied']
+  const networkStatuses = ['online', 'offline']
+  const connectorTypes = ['GB/T', 'Type2', 'CCS2', 'CHAdeMO']
+
+  // 生成 300 条数据
+  const piles = []
+  for (let i = 1; i <= 300; i++) {
+    const station = stations[Math.floor(Math.random() * stations.length)]
+    const pileType = pileTypes[Math.floor(Math.random() * pileTypes.length)]
+    const manufacturer =
+      manufacturers[Math.floor(Math.random() * manufacturers.length)]
+    const status = statuses[Math.floor(Math.random() * statuses.length)]
+    const networkStatus =
+      status === 'fault'
+        ? 'offline'
+        : networkStatuses[Math.floor(Math.random() * 10) < 9 ? 0 : 1]
+    const connectorType =
+      connectorTypes[Math.floor(Math.random() * connectorTypes.length)]
+
+    // 根据状态生成今日数据
+    const isFault = status === 'fault'
+    const todayOrders = isFault ? 0 : Math.floor(Math.random() * 80) + 5
+    const todayRevenue = isFault ? 0 : Math.floor(Math.random() * 8000) + 500
+    const todayElectricity = isFault ? 0 : Math.random() * 1500 + 50
+    const todayDuration = isFault ? 0 : Math.floor(Math.random() * 600) + 60
+
+    // 累计数据
+    const totalOrders = Math.floor(Math.random() * 40000) + 1000
+    const totalRevenue = Math.floor(Math.random() * 2000000) + 50000
+
+    // 日期
+    const installMonth = Math.floor(Math.random() * 12) + 1
+    const maintMonth = Math.floor(Math.random() * 3) + 10
+    const installDate = `2023-${String(installMonth).padStart(2, '0')}-${String(
+      Math.floor(Math.random() * 28) + 1
+    ).padStart(2, '0')}`
+    const lastMaintenance = `2023-${String(maintMonth).padStart(
+      2,
+      '0'
+    )}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`
+
+    piles.push({
+      id: i,
+      code: `CP-2023-${String(i).padStart(4, '0')}`,
+      name: `${pileType.typeName}桩-${String(i).padStart(2, '0')}`,
+      stationId: station.id,
+      stationName: station.name,
+      type: pileType.type,
+      typeName: pileType.typeName,
+      power: pileType.power,
+      voltage: pileType.voltage,
+      current: pileType.current,
+      connectorType,
+      connectorCount:
+        pileType.type === 'DC' ? Math.floor(Math.random() * 3) + 1 : 1,
+      manufacturer,
+      model: `${manufacturer.substring(0, 2).toUpperCase()}-${pileType.type}${pileType.power
+        }`,
+      serialNumber: `SN2023${String(i).padStart(4, '0')}`,
+      status,
+      networkStatus,
+      lastHeartbeat:
+        networkStatus === 'online'
+          ? '2023-12-03T10:30:00.000Z'
+          : '2023-12-02T18:30:00.000Z',
+      todayOrders,
+      todayRevenue,
+      todayDuration,
+      todayElectricity: Math.round(todayElectricity * 10) / 10,
+      totalOrders,
+      totalRevenue,
+      installDate,
+      lastMaintenance,
+      createAt: `${installDate}T10:00:00.000Z`,
+      updateAt: '2023-12-03T10:30:00.000Z'
+    })
   }
-]
+
+  return piles
+})()
 
 // 充电统计数据
 export const mockChargingStats = {
@@ -989,15 +885,15 @@ export const mockChargingStats = {
     revenueGrowth: 15.8,
     electricityGrowth: 11.2
   },
-  // 设备状态统计
+  // 设备状态统计（与 mockChargingPiles 300条数据对应）
   deviceStatus: {
-    total: 156,
-    available: 98,
-    charging: 45,
-    fault: 8,
-    offline: 5,
-    availableRate: 62.8,
-    faultRate: 5.1
+    total: 300,
+    available: 125,
+    charging: 100,
+    fault: 40,
+    offline: 35,
+    availableRate: 41.7,
+    faultRate: 13.3
   },
   // 类型分布
   typeDistribution: [

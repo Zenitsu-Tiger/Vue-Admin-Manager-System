@@ -5,7 +5,7 @@
       <div class="stats-header">
         <div class="title-section">
           <h2>🔌 充电桩设备管理</h2>
-          <p>实时监控和管理所有充电桩设备状态</p>
+          <p>实时监控和管理所有充电桩设备状态（VTable 高性能表格演示）</p>
         </div>
         <div class="action-section">
           <el-button type="primary" @click="handleAddPile">
@@ -107,171 +107,19 @@
       </el-form>
     </div>
 
-    <!-- 设备列表 -->
+    <!-- ==================== VTable 表格区域 ==================== -->
     <div class="pile-list fade-in" style="--delay: 0.3s">
-      <el-table
-        :data="filteredPiles"
-        border
-        stripe
-        style="width: 100%"
-        v-loading="tableLoading"
-        row-key="id"
-      >
-        <el-table-column type="selection" width="50" fixed="left" />
-        <el-table-column prop="code" label="设备编码" width="140" fixed="left">
-          <template #default="{ row }">
-            <el-button text type="primary" @click="handleViewDetail(row)">
-              {{ row.code }}
-            </el-button>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="设备名称" min-width="150" />
-        <el-table-column
-          prop="stationName"
-          label="所属站点"
-          min-width="160"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="typeName"
-          label="设备类型"
-          width="110"
-          align="center"
-        >
-          <template #default="{ row }">
-            <el-tag
-              :type="row.type === 'DC' ? 'warning' : 'success'"
-              effect="dark"
-            >
-              {{ row.typeName }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="power" label="功率" width="90" align="center">
-          <template #default="{ row }">
-            <span class="power-value">{{ row.power }}kW</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="status"
-          label="设备状态"
-          width="100"
-          align="center"
-        >
-          <template #default="{ row }">
-            <el-tag :type="getStatusType(row.status)" effect="plain">
-              <span class="status-dot" :class="row.status"></span>
-              {{ getStatusText(row.status) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="networkStatus"
-          label="网络状态"
-          width="100"
-          align="center"
-        >
-          <template #default="{ row }">
-            <el-tag
-              :type="row.networkStatus === 'online' ? 'success' : 'danger'"
-              size="small"
-            >
-              {{ row.networkStatus === 'online' ? '在线' : '离线' }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="今日数据" width="160">
-          <template #default="{ row }">
-            <div class="today-stats">
-              <div class="stat-row">
-                <span class="label">订单:</span>
-                <span class="value">{{ row.todayOrders }}单</span>
-              </div>
-              <div class="stat-row">
-                <span class="label">电量:</span>
-                <span class="value"
-                  >{{ row.todayElectricity.toFixed(1) }}度</span
-                >
-              </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="累计数据" width="160">
-          <template #default="{ row }">
-            <div class="total-stats">
-              <div class="stat-row">
-                <span class="label">订单:</span>
-                <span class="value highlight"
-                  >{{ formatNumber(row.totalOrders) }}单</span
-                >
-              </div>
-              <div class="stat-row">
-                <span class="label">收入:</span>
-                <span class="value highlight"
-                  >¥{{ formatNumber(row.totalRevenue) }}</span
-                >
-              </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="manufacturer" label="制造商" width="100" />
-        <el-table-column prop="lastMaintenance" label="最近维护" width="110" />
-        <el-table-column label="操作" width="180" fixed="right">
-          <template #default="{ row }">
-            <el-button
-              text
-              type="primary"
-              size="small"
-              @click="handleViewDetail(row)"
-            >
-              <el-icon><View /></el-icon>
-              详情
-            </el-button>
-            <el-button
-              text
-              type="warning"
-              size="small"
-              @click="handleEdit(row)"
-            >
-              <el-icon><Edit /></el-icon>
-              编辑
-            </el-button>
-            <el-dropdown trigger="click">
-              <el-button text type="info" size="small">
-                更多
-                <el-icon class="el-icon--right"><ArrowDown /></el-icon>
-              </el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="handleMaintenance(row)">
-                    <el-icon><Setting /></el-icon>
-                    维护记录
-                  </el-dropdown-item>
-                  <el-dropdown-item @click="handleRestart(row)">
-                    <el-icon><RefreshRight /></el-icon>
-                    重启设备
-                  </el-dropdown-item>
-                  <el-dropdown-item divided @click="handleDisable(row)">
-                    <el-icon><CircleClose /></el-icon>
-                    禁用设备
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <div class="pagination">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="filteredPiles.length"
-          layout="total, sizes, prev, pager, next, jumper"
-          background
-        />
+      <div class="vtable-tips">
+        <el-tag type="success" effect="plain">VTable 虚拟滚动</el-tag>
+        <span class="tip-text">
+          共
+          {{ filteredPiles.length }}
+          条数据，一次性加载全部数据，通过虚拟滚动只渲染可视区域
+        </span>
       </div>
+
+      <!-- VTable 核心：虚拟滚动表格，无需分页 -->
+      <div ref="vtableContainer" class="vtable-container"></div>
     </div>
 
     <!-- 设备详情弹窗 -->
@@ -399,48 +247,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, watch } from 'vue'
 import { ElMessage } from 'element-plus'
-import {
-  Plus,
-  Download,
-  Search,
-  RefreshLeft,
-  View,
-  Edit,
-  ArrowDown,
-  Setting,
-  RefreshRight,
-  CircleClose,
-  Top,
-  Bottom,
-  Coin,
-  Lightning,
-  Warning,
-  SuccessFilled,
-  Loading,
-  Clock
-} from '@element-plus/icons-vue'
+import { Plus, Download, Search, RefreshLeft } from '@element-plus/icons-vue'
 import {
   mockChargingPiles,
   mockChargingStations,
   mockChargingStats
 } from '@/mock'
 
+// ==================== VTable 导入 ====================
+// 核心：从 @visactor/vtable 导入 ListTable 类
+import { ListTable } from '@visactor/vtable'
+import type { ListTableConstructorOptions, TYPES } from '@visactor/vtable'
+
 defineOptions({
   name: 'ChargingPileGoods'
 })
 
+// ==================== VTable 实例引用 ====================
+const vtableContainer = ref<HTMLElement | null>(null)
+let tableInstance: ListTable | null = null
+
 // 充电桩列表
 const pileList = ref([...mockChargingPiles])
-const tableLoading = ref(false)
 
 // 站点选项
 const stationOptions = mockChargingStations
-
-// 分页
-const currentPage = ref(1)
-const pageSize = ref(10)
 
 // 筛选表单
 const filterForm = reactive({
@@ -480,7 +313,7 @@ const deviceStats = computed(() => [
   }
 ])
 
-// 过滤后的充电桩
+// 过滤后的充电桩 - 全部数据传给 VTable，由 VTable 虚拟滚动处理
 const filteredPiles = computed(() => {
   return pileList.value.filter((pile) => {
     const codeMatch = !filterForm.code || pile.code.includes(filterForm.code)
@@ -496,17 +329,311 @@ const filteredPiles = computed(() => {
 const detailDrawerVisible = ref(false)
 const currentPile = ref<any>(null)
 
-// 状态相关
-const getStatusType = (status: string) => {
-  const types: Record<string, string> = {
-    available: 'success',
-    charging: 'primary',
-    fault: 'danger',
-    occupied: 'warning'
+// ==================== VTable 配置 ====================
+/**
+ * 【教程重点】VTable 列配置
+ * 每列通过 field 绑定数据字段，title 设置表头
+ * 可以通过 style 自定义样式，通过 fieldFormat 格式化显示
+ */
+const getVTableColumns = (): TYPES.ColumnsDefine => [
+  {
+    field: 'code',
+    title: '设备编码',
+    width: 140,
+    // 【教程重点】静态样式配置
+    style: {
+      color: '#409eff',
+      fontWeight: 'bold',
+      textAlign: 'left',
+      padding: [0, 12]
+    }
+  },
+  {
+    field: 'name',
+    title: '设备名称',
+    width: 150,
+    style: {
+      padding: [0, 12]
+    }
+  },
+  {
+    field: 'stationName',
+    title: '所属站点',
+    width: 180,
+    style: {
+      padding: [0, 12]
+    }
+  },
+  {
+    field: 'typeName',
+    title: '设备类型',
+    width: 110,
+    // 【教程重点】动态样式函数 - 根据数据返回不同样式
+    style: (args) => {
+      const { row, table, col } = args
+      // 表头行返回默认样式
+      if (row === 0) {
+        return { textAlign: 'center' }
+      }
+      const record = table.getCellOriginRecord(col, row) as any
+      return {
+        textAlign: 'center',
+        color: '#fff',
+        bgColor: record?.type === 'DC' ? '#e6a23c' : '#67c23a',
+        borderRadius: 4
+      }
+    }
+  },
+  {
+    field: 'power',
+    title: '功率',
+    width: 90,
+    style: {
+      textAlign: 'center',
+      color: '#e6a23c',
+      fontWeight: 'bold'
+    },
+    // 【教程重点】fieldFormat - 格式化显示内容
+    fieldFormat: (record) => `${record.power}kW`
+  },
+  {
+    field: 'status',
+    title: '设备状态',
+    width: 100,
+    // 【教程重点】动态样式 - 根据状态显示不同颜色
+    style: (args) => {
+      const { row, table, col } = args
+      if (row === 0) {
+        return { textAlign: 'center' }
+      }
+      const record = table.getCellOriginRecord(col, row) as any
+      const statusColors: Record<string, string> = {
+        available: '#67c23a',
+        charging: '#409eff',
+        fault: '#f56c6c',
+        occupied: '#e6a23c'
+      }
+      return {
+        textAlign: 'center',
+        color: statusColors[record?.status] || '#606266',
+        fontWeight: 'bold'
+      }
+    },
+    // 状态文字转换
+    fieldFormat: (record) => {
+      const statusTexts: Record<string, string> = {
+        available: '● 空闲',
+        charging: '● 充电中',
+        fault: '● 故障',
+        occupied: '● 占用'
+      }
+      return statusTexts[record.status] || record.status
+    }
+  },
+  {
+    field: 'networkStatus',
+    title: '网络状态',
+    width: 90,
+    style: (args) => {
+      const { row, table, col } = args
+      if (row === 0) {
+        return { textAlign: 'center' }
+      }
+      const record = table.getCellOriginRecord(col, row) as any
+      return {
+        textAlign: 'center',
+        color: record?.networkStatus === 'online' ? '#67c23a' : '#f56c6c',
+        fontWeight: 'bold'
+      }
+    },
+    fieldFormat: (record) =>
+      record.networkStatus === 'online' ? '在线' : '离线'
+  },
+  {
+    field: 'todayOrders',
+    title: '今日订单',
+    width: 90,
+    style: {
+      textAlign: 'center'
+    },
+    fieldFormat: (record) => `${record.todayOrders}单`
+  },
+  {
+    field: 'todayElectricity',
+    title: '今日电量',
+    width: 100,
+    style: {
+      textAlign: 'center'
+    },
+    fieldFormat: (record) => `${record.todayElectricity.toFixed(1)}度`
+  },
+  {
+    field: 'totalOrders',
+    title: '累计订单',
+    width: 100,
+    style: {
+      textAlign: 'center',
+      color: '#409eff',
+      fontWeight: 'bold'
+    },
+    fieldFormat: (record) => formatNumber(record.totalOrders) + '单'
+  },
+  {
+    field: 'totalRevenue',
+    title: '累计收入',
+    width: 110,
+    style: {
+      textAlign: 'right',
+      color: '#f56c6c',
+      fontWeight: 'bold',
+      padding: [0, 12]
+    },
+    fieldFormat: (record) => `¥${formatNumber(record.totalRevenue)}`
+  },
+  {
+    field: 'manufacturer',
+    title: '制造商',
+    width: 100,
+    style: {
+      padding: [0, 12]
+    }
+  },
+  {
+    field: 'lastMaintenance',
+    title: '最近维护',
+    width: 110,
+    style: {
+      textAlign: 'center'
+    }
   }
-  return types[status] || 'info'
+]
+
+/**
+ * 【教程重点】初始化 VTable
+ * 核心步骤：
+ * 1. 定义 option 配置对象
+ * 2. 使用 new ListTable(container, option) 创建实例
+ * 3. 绑定事件监听（如点击事件）
+ *
+ * 【虚拟滚动原理】
+ * VTable 的核心优势是虚拟滚动：
+ * - 一次性传入全部数据（哪怕百万条）
+ * - VTable 只渲染可视区域内的行（比如 10-15 行）
+ * - 滚动时动态销毁/创建行，保持 DOM 节点数量恒定
+ * - 所以不需要分页，直接滚动浏览全部数据
+ */
+const initVTable = () => {
+  if (!vtableContainer.value) return
+
+  // 【教程重点】VTable 配置项
+  const option: ListTableConstructorOptions = {
+    // 【核心】数据源 - 传入全部数据，VTable 内部虚拟滚动处理
+    records: filteredPiles.value,
+    // 列定义
+    columns: getVTableColumns(),
+
+    // 宽度模式
+    widthMode: 'autoWidth',
+    autoFillWidth: true,
+
+    // 行高配置
+    defaultRowHeight: 48,
+    defaultHeaderRowHeight: 50,
+
+    // 【教程重点】主题配置 - 自定义表格外观
+    theme: {
+      headerStyle: {
+        bgColor: '#f5f7fa',
+        color: '#606266',
+        fontWeight: 'bold',
+        fontSize: 14,
+        borderColor: '#ebeef5',
+        borderLineWidth: 1
+      },
+      bodyStyle: {
+        bgColor: '#fff',
+        color: '#606266',
+        fontSize: 13,
+        borderColor: '#ebeef5',
+        borderLineWidth: 1,
+        hover: {
+          cellBgColor: '#ecf5ff'
+        }
+      },
+      frameStyle: {
+        borderColor: '#ebeef5',
+        borderLineWidth: 1
+      }
+    },
+
+    // 行高亮模式
+    hover: {
+      highlightMode: 'row'
+    },
+
+    // 选中样式
+    select: {
+      highlightMode: 'row'
+    },
+
+    // 冻结首列（设备编码）
+    frozenColCount: 1
+  }
+
+  // 创建 VTable 实例
+  tableInstance = new ListTable(vtableContainer.value, option)
+
+  // 【教程重点】绑定单元格点击事件
+  tableInstance.on('click_cell', (args) => {
+    const { col, row, field } = args
+    // 点击设备编码列时打开详情
+    if (field === 'code' && row > 0) {
+      const record = tableInstance?.getCellOriginRecord(col, row)
+      if (record) {
+        handleViewDetail(record)
+      }
+    }
+  })
 }
 
+/**
+ * 【教程重点】更新 VTable 数据
+ * 使用 setRecords 方法高效更新数据，无需重建实例
+ */
+/**
+ * 【教程重点】更新 VTable 数据
+ * 使用 setRecords 方法高效更新全部数据
+ * VTable 内部会自动处理虚拟滚动
+ */
+const updateVTableData = () => {
+  if (tableInstance) {
+    tableInstance.setRecords(filteredPiles.value)
+  }
+}
+
+// ==================== 生命周期 ====================
+onMounted(() => {
+  initVTable()
+})
+
+onUnmounted(() => {
+  // 【教程重点】销毁实例，释放内存
+  if (tableInstance) {
+    tableInstance.release()
+    tableInstance = null
+  }
+})
+
+// 监听筛选数据变化，更新表格
+watch(
+  () => filteredPiles.value,
+  () => {
+    updateVTableData()
+  },
+  { deep: true }
+)
+
+// ==================== 状态相关函数 ====================
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
     available: '空闲',
@@ -543,56 +670,31 @@ const formatTime = (dateStr: string) => {
   ).padStart(2, '0')}`
 }
 
-// 搜索
+// ==================== 事件处理 ====================
 const handleSearch = () => {
-  tableLoading.value = true
-  setTimeout(() => {
-    tableLoading.value = false
-  }, 500)
+  // 筛选后数据通过 watch filteredPiles 自动更新
+  ElMessage.success(`搜索完成，共 ${filteredPiles.value.length} 条数据`)
 }
 
-// 重置
 const handleReset = () => {
   filterForm.code = ''
   filterForm.stationId = null
   filterForm.type = ''
   filterForm.status = ''
+  // 重置后数据通过 watch filteredPiles 自动更新
 }
 
-// 添加设备
 const handleAddPile = () => {
   ElMessage.info('打开添加设备弹窗')
 }
 
-// 导出数据
 const handleExport = () => {
   ElMessage.success('数据导出成功')
 }
 
-// 查看详情
 const handleViewDetail = (row: any) => {
   currentPile.value = row
   detailDrawerVisible.value = true
-}
-
-// 编辑
-const handleEdit = (row: any) => {
-  ElMessage.info(`编辑设备: ${row.name}`)
-}
-
-// 维护记录
-const handleMaintenance = (row: any) => {
-  ElMessage.info(`查看维护记录: ${row.name}`)
-}
-
-// 重启设备
-const handleRestart = (row: any) => {
-  ElMessage.success(`设备 ${row.code} 重启指令已发送`)
-}
-
-// 禁用设备
-const handleDisable = (row: any) => {
-  ElMessage.warning(`设备 ${row.code} 已禁用`)
 }
 </script>
 
@@ -743,64 +845,27 @@ const handleDisable = (row: any) => {
   padding: 20px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 
-  .power-value {
-    font-weight: 600;
-    color: #e6a23c;
-  }
+  .vtable-tips {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed #ebeef5;
 
-  .status-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-right: 4px;
-
-    &.available {
-      background: #67c23a;
-    }
-    &.charging {
-      background: #409eff;
-      animation: pulse 1.5s infinite;
-    }
-    &.fault {
-      background: #f56c6c;
-    }
-    &.occupied {
-      background: #e6a23c;
+    .tip-text {
+      color: #909399;
+      font-size: 13px;
     }
   }
 
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-
-  .today-stats,
-  .total-stats {
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      line-height: 1.8;
-
-      .label {
-        color: #909399;
-      }
-
-      .value {
-        color: #606266;
-
-        &.highlight {
-          color: #409eff;
-          font-weight: 600;
-        }
-      }
-    }
+  /* VTable 容器样式 - 必须设置固定高度 */
+  .vtable-container {
+    width: 100%;
+    height: 530px; /* 固定高度：10行数据 + 表头 */
+    border: 1px solid #ebeef5;
+    border-radius: 8px;
+    overflow: hidden;
   }
 
   .pagination {
